@@ -1,0 +1,230 @@
+/* Standalone Stylesheet for Login Page Component (Glory Simon Interiors) */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
+
+:root {
+  --login-bg: #141619;          /* Deep neutral dark charcoal */
+  --login-card-bg: #1d2025;     /* Dark slate-charcoal panel */
+  --login-text-primary: #f5f6f8;
+  --login-text-secondary: #9095a0;
+  --login-gold: #c5a880;        /* Warm Champagne Gold */
+  --login-gold-hover: #dfc29a;
+  --login-border: #2c313a;
+  --login-input-bg: #16181c;
+  --login-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  --login-error-bg: #2d1818;
+  --login-error-text: #f06c6c;
+  --login-radius: 12px;
+}
+
+.login-auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: var(--login-bg);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--login-text-primary);
+}
+
+.login-card {
+  background-color: var(--login-card-bg);
+  border: 1px solid var(--login-border);
+  border-radius: var(--login-radius);
+  padding: 3rem 2.5rem;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: var(--login-shadow);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Luxury accent bar at the top */
+.login-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #1d2025 0%, var(--login-gold) 50%, #1d2025 100%);
+}
+
+.login-header {
+  margin-bottom: 2.2rem;
+}
+
+.login-logo-mark {
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid var(--login-gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  font-size: 1.4rem;
+  color: var(--login-gold);
+  margin: 0 auto 1rem auto;
+}
+
+.login-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: var(--login-text-primary);
+  margin-bottom: 0.4rem;
+}
+
+.login-subtitle {
+  color: var(--login-text-secondary);
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.login-form-group {
+  margin-bottom: 1.4rem;
+  text-align: left;
+}
+
+.login-form-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--login-gold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.login-form-input, 
+.login-form-select {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  border: 1px solid var(--login-border);
+  border-radius: 6px;
+  background-color: var(--login-input-bg);
+  color: var(--login-text-primary);
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.login-form-input:focus, 
+.login-form-select:focus {
+  border-color: var(--login-gold);
+  box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.15);
+}
+
+.login-form-select option {
+  background-color: var(--login-card-bg);
+  color: var(--login-text-primary);
+}
+
+.login-btn-primary {
+  width: 100%;
+  padding: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #141619;
+  background-color: var(--login-gold);
+  border: 1px solid var(--login-gold);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-btn-primary:hover {
+  background-color: var(--login-gold-hover);
+  border-color: var(--login-gold-hover);
+}
+
+.login-btn-primary:disabled {
+  background-color: var(--login-border);
+  border-color: var(--login-border);
+  color: var(--login-text-secondary);
+  cursor: not-allowed;
+}
+
+.login-error-banner {
+  background-color: var(--login-error-bg);
+  border: 1px solid rgba(240, 108, 108, 0.2);
+  color: var(--login-error-text);
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  font-size: 0.8rem;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.login-autofill-panel {
+  margin-top: 2.2rem;
+  border-top: 1px solid var(--login-border);
+  padding-top: 1.5rem;
+}
+
+.login-autofill-title {
+  font-size: 0.7rem;
+  color: var(--login-text-secondary);
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.login-autofill-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.login-autofill-btn {
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--login-border);
+  color: var(--login-text-secondary);
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.login-autofill-btn:hover {
+  border-color: var(--login-gold);
+  color: var(--login-text-primary);
+  background-color: rgba(197, 168, 128, 0.05);
+}
+
+.login-autofill-arrow {
+  color: var(--login-gold);
+  font-size: 0.7rem;
+}
+
+@keyframes login-spin {
+  to { transform: rotate(360deg); }
+}
+
+.login-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(20, 22, 25, 0.3);
+  border-top-color: #141619;
+  border-radius: 50%;
+  animation: login-spin 0.6s linear infinite;
+  margin-right: 8px;
+}

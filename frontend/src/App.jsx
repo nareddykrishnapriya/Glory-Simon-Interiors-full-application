@@ -5,9 +5,9 @@ import Dashboard from './components/Dashboard';
 import ReportForm from './components/ReportForm';
 import DetailView from './components/DetailView';
 
-// Backend URL: set VITE_BACKEND_URL in Netlify environment variables to point to your hosted backend.
-// For local dev, it falls back to http://127.0.0.1:5000
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:5000';
+// In development: Vite proxies /api calls to Flask (port 5000) automatically — no CORS issues.
+// In production (Netlify): set VITE_BACKEND_URL to your Railway/Render backend URL.
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '';
 
 export default function App() {
   const [user, setUser] = useState(null); // stores { user_id, name, email, role }

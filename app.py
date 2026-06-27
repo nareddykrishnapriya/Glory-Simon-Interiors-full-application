@@ -5,24 +5,24 @@ from datetime import datetime
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
-import mysql.connector
-from mysql.connector import pooling
 
 # Serve React build as static files when built
 FRONTEND_DIST = os.path.join(os.path.dirname(__file__), 'frontend', 'dist')
 app = Flask(__name__, static_folder=FRONTEND_DIST, static_url_path='')
-# Enable CORS to allow seamless connection from React application running on port 5173
+# Enable CORS to allow cross-origin requests from the React frontend
 CORS(app)
 
 # Database Configuration Mode
-DB_MODE = "mysql"  # Will dynamically fall back to "sqlite" if MySQL connection fails
+# Set DB_MODE=mysql in environment to use MySQL (requires MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE).
+# Defaults to SQLite for simplicity on platforms like Render.
+DB_MODE = os.environ.get('DB_MODE', 'sqlite').lower()
 connection_pool = None
 
 MYSQL_CONFIG = {
-    "host": "localhost",
-    "user": "root",
-    "password": "",  # Default blank password
-    "database": "glory_simon_interiors",
+    "host": os.environ.get('MYSQL_HOST', 'localhost'),
+    "user": os.environ.get('MYSQL_USER', 'root'),
+    "password": os.environ.get('MYSQL_PASSWORD', ''),
+    "database": os.environ.get('MYSQL_DATABASE', 'glory_simon_interiors'),
     "charset": "utf8mb4"
 }
 
@@ -31,47 +31,53 @@ MYSQL_CONFIG = {
 # ==========================================
 def init_database():
     global DB_MODE, connection_pool
-    try:
-        # Pre-check: Connect to MySQL host to ensure MySQL server is running,
-        # and verify/create the target database.
-        temp_config = MYSQL_CONFIG.copy()
-        db_name = temp_config.pop("database", "glory_simon_interiors")
-        
-        conn = mysql.connector.connect(**temp_config)
-        cursor = conn.cursor()
-        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_name} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;")
-        cursor.close()
-        conn.close()
-        
-        # Initialize MySQL Connection Pool
-        connection_pool = pooling.MySQLConnectionPool(
-            pool_name="gsi_pool",
-            pool_size=5,
-            pool_reset_mode='transaction',
-            **MYSQL_CONFIG
-        )
-        print("Backend Database: Connected to MySQL via mysql.connector.")
-        DB_MODE = "mysql"
-        
-        # Check if users table exists. If not, trigger full schema seeding.
-        conn = connection_pool.get_connection()
-        cursor = conn.cursor()
-        cursor.execute("SHOW TABLES LIKE 'users'")
-        result = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        
-        if not result:
-            print("Backend Database: MySQL tables missing. Running initial seeding...")
-            run_mysql_schema_seeding()
+    if DB_MODE == "mysql":
+        try:
+            from mysql.connector import pooling as mysql_pooling
+            import mysql.connector as mysql_conn
 
-    except Exception as e:
-        print(f"Backend Database: MySQL connection/init failed ({e}). Falling back to SQLite local...")
-        DB_MODE = "sqlite"
+            # Pre-check: Connect to MySQL host to ensure MySQL server is running,
+            # and verify/create the target database.
+            temp_config = MYSQL_CONFIG.copy()
+            db_name = temp_config.pop("database", "glory_simon_interiors")
+
+            conn = mysql_conn.connect(**temp_config)
+            cursor = conn.cursor()
+            cursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_name} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;")
+            cursor.close()
+            conn.close()
+
+            # Initialize MySQL Connection Pool
+            connection_pool = mysql_pooling.MySQLConnectionPool(
+                pool_name="gsi_pool",
+                pool_size=5,
+                pool_reset_mode='transaction',
+                **MYSQL_CONFIG
+            )
+            print("Backend Database: Connected to MySQL via mysql.connector.")
+
+            # Check if users table exists. If not, trigger full schema seeding.
+            conn = connection_pool.get_connection()
+            cursor = conn.cursor()
+            cursor.execute("SHOW TABLES LIKE 'users'")
+            result = cursor.fetchone()
+            cursor.close()
+            conn.close()
+
+            if not result:
+                print("Backend Database: MySQL tables missing. Running initial seeding...")
+                run_mysql_schema_seeding()
+
+        except Exception as e:
+            print(f"Backend Database: MySQL connection/init failed ({e}). Falling back to SQLite...")
+            DB_MODE = "sqlite"
+            init_sqlite_database()
+    else:
+        print("Backend Database: Using SQLite mode.")
         init_sqlite_database()
 
 def get_db_connection():
-    if DB_MODE == "mysql":
+    if DB_MODE == "mysql" and connection_pool:
         return connection_pool.get_connection()
     else:
         conn = sqlite3.connect("gsi_reports.db")

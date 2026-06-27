@@ -2,13 +2,15 @@ import os
 import json
 import sqlite3
 from datetime import datetime
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 import mysql.connector
 from mysql.connector import pooling
 
-app = Flask(__name__)
+# Serve React build as static files when built
+FRONTEND_DIST = os.path.join(os.path.dirname(__file__), 'frontend', 'dist')
+app = Flask(__name__, static_folder=FRONTEND_DIST, static_url_path='')
 # Enable CORS to allow seamless connection from React application running on port 5173
 CORS(app)
 
@@ -615,5 +617,16 @@ def get_report_detail(id):
         app.logger.error(f"Fetch detail error: {e}")
         return jsonify({"error": "Failed to compile progress report detail inspector."}), 500
 
+
+# --- Serve React Frontend ---
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_react(path):
+    """Catch-all route: serve React app for any non-API route."""
+    if path and os.path.exists(os.path.join(FRONTEND_DIST, path)):
+        return send_from_directory(FRONTEND_DIST, path)
+    return send_from_directory(FRONTEND_DIST, 'index.html')
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=False, host='0.0.0.0', port=port)

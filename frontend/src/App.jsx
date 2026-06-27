@@ -5,8 +5,9 @@ import Dashboard from './components/Dashboard';
 import ReportForm from './components/ReportForm';
 import DetailView from './components/DetailView';
 
-// Flask backend API endpoint (default port 5000)
-const BACKEND_URL = 'http://127.0.0.1:5000';
+// Backend URL: set VITE_BACKEND_URL in Netlify environment variables to point to your hosted backend.
+// For local dev, it falls back to http://127.0.0.1:5000
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:5000';
 
 export default function App() {
   const [user, setUser] = useState(null); // stores { user_id, name, email, role }

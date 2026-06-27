@@ -1,6 +1,6 @@
-# Tell Nixpacks to include both Python and Node.js providers
+# Nixpacks config for Railway: Python 3.11 + Node.js 20 (no collision)
 [phases.setup]
-nixPkgs = ["python311", "nodejs_20", "nodePackages.npm"]
+nixPkgs = ["python311", "nodejs_20"]
 
 [phases.install]
 cmds = [

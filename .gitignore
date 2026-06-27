@@ -8,7 +8,7 @@ __pycache__/
 *.pyc
 *.egg
 *.egg-info/
-dist/
+# dist/ — kept for Python build artifacts only, NOT frontend/dist
 build/
 .eggs/
 .env
@@ -31,7 +31,7 @@ instance/
 # =====================
 node_modules/
 frontend/node_modules/
-frontend/dist/
+# frontend/dist/ — intentionally tracked so Render can serve pre-built files without Node.js
 frontend/.vite/
 .npm/
 *.local

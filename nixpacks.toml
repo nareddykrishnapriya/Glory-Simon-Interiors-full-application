@@ -1,0 +1,15 @@
+# Tell Nixpacks to include both Python and Node.js providers
+[phases.setup]
+nixPkgs = ["python311", "nodejs_20", "nodePackages.npm"]
+
+[phases.install]
+cmds = [
+  "pip install -r requirements.txt",
+  "npm install --prefix frontend"
+]
+
+[phases.build]
+cmds = ["npm run build --prefix frontend"]
+
+[start]
+cmd = "gunicorn app:app --workers 2 --bind 0.0.0.0:$PORT"
